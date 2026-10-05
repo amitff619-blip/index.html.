@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amit FF Study</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#08111f;color:#fff;font-family:Arial,"Noto Sans Devanagari",sans-serif}
+header{position:sticky;top:0;z-index:10;background:#0d1d32;padding:15px;border-bottom:1px solid #294563}
+.logo{font-size:26px;font-weight:900}
+.datetime{margin-top:8px;background:#122945;padding:9px;border-radius:10px;color:#d9efff}
+main{max-width:1000px;margin:auto;padding:18px 14px 90px}
+.page{display:none}.page.active{display:block}
+.hero{background:linear-gradient(135deg,#123052,#0d1c31);padding:22px;border-radius:18px;border:1px solid #2a4968;margin-bottom:18px}
+h1,h2,h3{margin-top:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
+.classBtn,.card{background:#10243b;border:1px solid #2b4967;border-radius:15px;padding:16px}
+.classBtn{color:white;font-weight:bold;min-height:75px}
+.classBtn:hover,.card:hover{border-color:#42aef5}
+.classBtn small{display:block;color:#8faeca;margin-top:5px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+button{font:inherit;cursor:pointer}
+.btn{border:0;border-radius:10px;padding:10px 14px;font-weight:bold;background:#1688e8;color:white}
+.btn2{border:1px solid #385875;border-radius:10px;padding:10px 14px;font-weight:bold;background:#142a43;color:white}
+.search{width:100%;padding:13px;margin:12px 0;background:#071321;color:white;border:1px solid #385875;border-radius:11px}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#091523;border-top:1px solid #294563;z-index:20}
+.nav{display:flex;max-width:700px;margin:auto}
+.nav button{flex:1;border:0;background:transparent;color:#a9bfd4;padding:9px 3px 11px;font-size:12px;font-weight:bold}
+.nav button.active{color:#45b4ff}
+.nav span{display:block;font-size:20px}
+.calc{max-width:430px;margin:auto;background:#0d1c2d;border:1px solid #2c4a68;border-radius:18px;padding:14px}
+.screen{background:#050b13;border:1px solid #28405b;border-radius:11px;padding:16px;text-align:right;font-size:28px;min-height:65px;margin-bottom:10px;overflow:auto}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.keys button{padding:15px 5px;background:#132a43;color:white;border:1px solid #2b4967;border-radius:9px;font-weight:bold}
+.keys .op{background:#165075}.keys .eq{background:#16885f;grid-column:span 2}.keys .clear{background:#722c38}
+.viewer{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:50;padding:10px}
+.viewerBox{height:100%;background:#0d1c2d;border-radius:14px;padding:10px;display:flex;flex-direction:column}
+.viewerTop{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+#pdf{width:100%;height:100%;border:0;background:white}
+.note{color:#a9bfd4;background:#10243b;padding:12px;border-radius:11px}
+@media(max-width:600px){.logo{font-size:22px}.classBtn{padding:12px}}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="logo">📚 Amit FF Study</div>
+  <div class="datetime" id="datetime">नेपाली मिति र समय...</div>
+</header>
+
+<main>
+
+<section id="home" class="page active">
+  <div class="hero">
+    <h1>स्वागत छ 👋</h1>
+    <p>कक्षा १ देखि १२ सम्म आफ्नो कक्षा छान्नुहोस्।</p>
+  </div>
+  <h2>कक्षा</h2>
+  <div class="grid" id="classes"></div>
+</section>
+
+<section id="answers" class="page">
+  <h2>🔎 Answer / Search</h2>
+  <input id="search" class="search" type="search"
+         placeholder="किताब वा विषय खोज्नुहोस्..."
+         oninput="searchBooks()">
+  <div id="results" class="cards"></div>
+</section>
+
+<section id="calculator" class="page">
+  <h2>🧮 Scientific Calculator</h2>
+  <div class="calc">
+    <div id="screen" class="screen">0</div>
+    <div class="keys">
+      <button class="clear" onclick="clearCalc()">AC</button>
+      <button onclick="backspace()">⌫</button>
+      <button onclick="add('(')">(</button>
+      <button onclick="add(')')">)</button>
+
+      <button onclick="add('sin(')">sin</button>
+      <button onclick="add('cos(')">cos</button>
+      <button onclick="add('tan(')">tan</button>
+      <button class="op" onclick="add('/')">÷</button>
+
+      <button onclick="add('7')">७</button>
+      <button onclick="add('8')">८</button>
+      <button onclick="add('9')">९</button>
+      <button class="op" onclick="add('*')">×</button>
+
+      <button onclick="add('4')">४</button>
+      <button onclick="add('5')">५</button>
+      <button onclick="add('6')">६</button>
+      <button class="op" onclick="add('-')">−</button>
+
+      <button onclick="add('1')">१</button>
+      <button onclick="add('2')">२</button>
+      <button onclick="add('3')">३</button>
+      <button class="op" onclick="add('+')">+</button>
+
+      <button onclick="add('0')">०</button>
+      <button onclick="add('.')">.</button>
+      <button onclick="add('Math.PI')">π</button>
+      <button onclick="add('Math.sqrt(')">√</button>
+
+      <button onclick="add('**')">xʸ</button>
+      <button onclick="add('%')">%</button>
+      <button class="eq" onclick="calculate()">=</button>
+    </div>
+  </div>
+</section>
+
+<section id="details" class="page">
+  <h2>ℹ️ Details</h2>
+  <div class="hero">
+    <h2>Amit FF Study</h2>
+    <p>कक्षा १–१२ अध्ययन वेबसाइट</p>
+    <p class="note">यहाँ पछि आफ्नो फोटो, नाम र अन्य विवरण राख्न सकिन्छ।</p>
+  </div>
+</section>
+
+<section id="classPage" class="page">
+  <button class="btn2" onclick="showPage('home')">← Home</button>
+  <h2 id="classTitle" style="margin-top:15px"></h2>
+  <div id="subjects" class="cards"></div>
+</section>
+
+</main>
+
+<div class="bottom">
+  <nav class="nav">
+    <button id="homeNav" onclick="showPage('home')"><span>⌂</span>Home</button>
+    <button id="answerNav" onclick="showPage('answers')"><span>🔎</span>Answer</button>
+    <button id="calcNav" onclick="showPage('calculator')"><span>🧮</span>Calculator</button>
+    <button id="detailsNav" onclick="showPage('details')"><span>ℹ️</span>Details</button>
+  </nav>
+</div>
+
+<div id="viewer" class="viewer">
+  <div class="viewerBox">
+    <div class="viewerTop">
+      <b id="viewerName">Book</b>
+      <button class="btn" onclick="closeBook()">बन्द</button>
+    </div>
+    <iframe id="pdf"></iframe>
+  </div>
+</div>
+
+<script>
+const nep=['०','१','२','३','४','५','६','७','८','९'];
+
+function nepaliNumber(x){
+  return String(x).replace(/[0-9]/g,n=>nep[n]);
+}
+
+/* नेपाली समय र २०८३ वि.सं. मिति */
+function updateDateTime(){
+  const d=new Date();
+
+  const time=d.toLocaleTimeString('ne-NP',{
+    timeZone:'Asia/Kathmandu',
+    hour:'2-digit',minute:'2-digit',second:'2-digit',
+    hour12:true
+  });
+
+  const ad=d.toLocaleDateString('ne-NP',{
+    timeZone:'Asia/Kathmandu',
+    weekday:'long',year:'numeric',month:'long',day:'numeric'
+  });
+
+  document.getElementById('datetime').innerHTML=
+    '📅 '+ad+'<br>⏰ '+time+' (नेपाल समय)';
+}
+setInterval(updateDateTime,1000);
+updateDateTime();
+
+/* Class 1–12 */
+const classBox=document.getElementById('classes');
+
+for(let i=1;i<=12;i++){
+  const b=document.createElement('button');
+  b.className='classBtn';
+  b.innerHTML='कक्षा '+nepaliNumber(i)+'<small>Class '+i+'</small>';
+  b.onclick=()=>openClass(i);
+  classBox.appendChild(b);
+}
+
+/* तपाईंले दिएका Class 10 PDFs */
+const books=[
+ ['सामाजिक अध्ययन','0010_SocialStudiesGrade10.pdf','📘'],
+ ['नेपाली','RS827_REVISED NEPALI BOOK GRADE 10.pdf','📕'],
+ ['अंग्रेजी','RS9828_Grade 10 OPT ENGLISH.pdf','📗'],
+ ['गणित','RS1093_FINAL MATHS ENGLISH VERSION GRADE 10.pdf','📐'],
+ ['ऐच्छिक गणित','RS3883_OPTINAL MATHS GRADE 10 ENGLISH VERSION.pdf','📊'],
+ ['विज्ञान तथा प्रविधि','RS10490_Science and Technology (English Translation) Grade 10.pdf','🔬'],
+ ['कम्प्युटर विज्ञान','RS3667_Computer Science.pdf','💻'],
+ ['अंग्रेजी शिक्षक निर्देशिका','RS10861_Grade 10 TG_Final (1).pdf','📙']
+];
+
+function makeBookCard(book){
+  const c=document.createElement('div');
+  c.className='card';
+  c.innerHTML=
+    '<h3>'+book[2]+' '+book[0]+'</h3>'+
+    '<p class="note">कक्षा १०</p>'+
+    '<button class="btn">📖 किताब खोल्नुहोस्</button>';
+  c.querySelector('button').onclick=()=>openBook(book[0],book[1]);
+  return c;
+}
+
+function openClass(n){
+  document.getElementById('classTitle').textContent='कक्षा '+nepaliNumber(n);
+  const box=document.getElementById('subjects');
+  box.innerHTML='';
+
+  if(n===10){
+    books.forEach(book=>box.appendChild(makeBookCard(book)));
+  }else{
+    box.innerHTML=
+      '<div class="card"><h3>📚 कक्षा '+nepaliNumber(n)+'</h3>'+
+      '<p class="note">यस कक्षाका किताबहरू पछि थप्न सकिन्छ।</p></div>';
+  }
+  showPage('classPage');
+}
+
+/* Search / Answer */
+function searchBooks(){
+  const q=document.getElementById('search').value.toLowerCase().trim();
+  const box=document.getElementById('results');
+  box.innerHTML='';
+
+  const found=books.filter(b=>!q || b[0].toLowerCase().includes(q));
+
+  if(!found.length){
+    box.innerHTML='<div class="card"><h3>कुनै किताब भेटिएन।</h3></div>';
+    return;
+  }
+
+  found.forEach(book=>box.appendChild(makeBookCard(book)));
+}
+searchBooks();
+
+/* PDF Viewer */
+function openBook(name,file){
+  document.getElementById('viewerName').textContent=name;
+  document.getElementById('pdf').src='books/'+encodeURIComponent(file);
+  document.getElementById('viewer').style.display='block';
+}
+function closeBook(){
+  document.getElementById('pdf').src='about:blank';
+  document.getElementById('viewer').style.display='none';
+}
+
+/* Scientific Calculator */
+let expression='';
+
+function renderCalc(){
+  document.getElementById('screen').textContent=expression||'0';
+}
+function add(x){
+  expression+=x;
+  renderCalc();
+}
+function clearCalc(){
+  expression='';
+  renderCalc();
+}
+function backspace(){
+  expression=expression.slice(0,-1);
+  renderCalc();
+}
+function calculate(){
+  try{
+    let x=expression
+      .replace(/×/g,'*')
+      .replace(/÷/g,'/')
+      .replace(/sin\(/g,'Math.sin(')
+      .replace(/cos\(/g,'Math.cos(')
+      .replace(/tan\(/g,'Math.tan(');
+
+    if(!/^[0-9A-Za-z_+*\/().%\-\s]+$/.test(x)) throw new Error();
+
+    const result=Function('"use strict";return ('+x+')')();
+
+    if(!Number.isFinite(result)) throw new Error();
+
+    expression=String(Math.round(result*10000000000)/10000000000);
+    renderCalc();
+  }catch(e){
+    document.getElementById('screen').textContent='त्रुटि';
+    setTimeout(()=>{expression='';renderCalc()},1000);
+  }
+}
+
+/* Page Navigation */
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+
+  const nav={
+    home:'homeNav',
+    answers:'answerNav',
+    calculator:'calcNav',
+    details:'detailsNav'
+  };
+
+  if(nav[id]) document.getElementById(nav[id]).classList.add('active');
+
+  window.scrollTo(0,0);
+}
+showPage('home');
+</script>
+</body>
+</html>
